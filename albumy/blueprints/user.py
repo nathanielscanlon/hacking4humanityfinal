@@ -12,7 +12,7 @@ from albumy.decorators import confirm_required, permission_required
 from albumy.emails import send_change_email_email
 from albumy.extensions import db, avatars
 from albumy.forms.user import EditProfileForm, UploadAvatarForm, CropAvatarForm, ChangeEmailForm, \
-    ChangePasswordForm, NotificationSettingForm, PrivacySettingForm, DeleteAccountForm
+    ChangePasswordForm, NotificationSettingForm, PrivacySettingForm, DeleteAccountForm, HateSafetyForm
 from albumy.models import User, Photo, Collect
 from albumy.notifications import push_follow_notification
 from albumy.settings import Operations
@@ -215,6 +215,19 @@ def notification_setting():
     form.receive_comment_notification.data = current_user.receive_comment_notification
     form.receive_follow_notification.data = current_user.receive_follow_notification
     return render_template('user/settings/edit_notification.html', form=form)
+
+
+@user_bp.route('/settings/hate_safety', methods=['GET', 'POST'])
+@login_required
+def hate_safety():
+    form = HateSafetyForm()
+    if form.validate_on_submit():
+        current_user.hate_safety_level = form.hate_safety_level.data
+        db.session.commit()
+        flash(f'Hate safety level set to {current_user.hate_safety_level}', 'success')
+        return redirect(url_for('user.hate_safety'))
+    form.hate_safety_level.data = current_user.hate_safety_level
+    return render_template('user/settings/hate_safety.html', form=form)
 
 
 @user_bp.route('/settings/privacy', methods=['GET', 'POST'])
