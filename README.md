@@ -1,44 +1,20 @@
-# Albumy
+# Edited Albumy For Hate Prevention
 
-*Capture and share every wonderful moment.*
+Original code from: https://github.com/greyli/albumy.git
+The following is a repo for Nathaniel Scanlon and Adam Johnson's Hacking4Humanity 2025 Project.
+We adapted the code from a fake socical media as seen above that did not have
+any hate protections. We then implemented an AI scanner to detect hate speech and falg it. To prevent censoring free speech
+we allowed users to customize their own protections so they could filter hate speech if they choose.
+Futhermore, we added carious parental controls and resources to help deter the spread of hate speech.
 
-> Example application for *[Python Web Development with Flask](https://helloflask.com/en/book/1)* (《[Flask Web 开发实战](https://helloflask.com/book/1)》).
+Changes:
+The files albumy/templates/main/confirm_hate_speech.html and albumy/templates/user/settings/hate_safety.html were created soley by us. 
+In albumy/utils.py 109 - 133 were programmed by us.
+In albumy/blueprints/main.py 383-416 were programmed by us.
+IN albumy/forms/user.py  71-80 were programmed by us.
+In albumy/blueprints/user.py 220-231 were programmed by us.
+Other files weere edited by us, but they were used to make fake accounts on the 
+site. Furthermore, other html files were edited to display our settings. However,
+all relevant files to the way the hate prevention works and the site is displayed
+are above.
 
-Demo: http://albumy.helloflask.com
-
-![Screenshot](https://helloflask.com/screenshots/albumy.png)
-
-## Installation
-
-clone:
-```
-$ git clone https://github.com/greyli/albumy.git
-$ cd albumy
-```
-create & activate virtual env then install dependency:
-
-with venv/virtualenv + pip:
-```
-$ python -m venv env  # use `virtualenv env` for Python2, use `python3 ...` for Python3 on Linux & macOS
-$ source env/bin/activate  # use `env\Scripts\activate` on Windows
-$ pip install -r requirements.txt
-```
-or with Pipenv:
-```
-$ pipenv install --dev
-$ pipenv shell
-```
-generate fake data then run:
-```
-$ flask forge
-$ flask run
-* Running on http://127.0.0.1:5000/
-```
-Test account:
-* email: `admin@helloflask.com`
-* password: `helloflask`
-
-## License
-
-This project is licensed under the MIT License (see the
-[LICENSE](LICENSE) file for details).
