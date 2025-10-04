@@ -20,11 +20,11 @@ fake = Faker()
 
 
 def fake_admin():
-    admin = User(name='Grey Li',
-                 username='greyli',
+    admin = User(name='Hacking4Humanity',
+                 username='Stop_Online_Hate',
                  email='admin@helloflask.com',
-                 bio=fake.sentence(),
-                 website='http://greyli.com',
+                 bio="On a mission to stop online hate",
+                 website='http://Hackathon.com',
                  confirmed=True)
     admin.set_password('helloflask')
     notification = Notification(message='Hello, welcome to Albumy.', receiver=admin)
@@ -71,30 +71,107 @@ def fake_tag(count=20):
 def fake_photo(count=30):
     # photos
     upload_path = current_app.config['ALBUMY_UPLOAD_PATH']
-    for i in range(count):
-        print(i)
 
-        filename = 'random_%d.jpg' % i
-        r = lambda: random.randint(128, 255)
-        img = Image.new(mode='RGB', size=(800, 800), color=(r(), r(), r()))
-        img.save(os.path.join(upload_path, filename))
 
-        photo = Photo(
-            description=fake.text(),
-            filename=filename,
-            filename_m=filename,
-            filename_s=filename,
-            author=User.query.get(random.randint(1, User.query.count())),
-            timestamp=fake.date_time_this_year()
-        )
+    #######
+    filename = 'hachphoto1.jpg' 
+    photo = Photo(
+        description="Had a great day at the Rock Festival",
+        filename=filename,
+        filename_m=filename,
+        filename_s=filename,
+        author=User.query.get(random.randint(1, User.query.count())),
+        timestamp=fake.date_time_this_year()
+    )
+    tag = Tag(name='RockON')
+    db.session.add(tag)
 
-        # tags
-        for j in range(random.randint(1, 5)):
-            tag = Tag.query.get(random.randint(1, Tag.query.count()))
-            if tag not in photo.tags:
-                photo.tags.append(tag)
+    photo.tags.append(tag)
+    db.session.add(photo)
 
-        db.session.add(photo)
+    filename = 'Pitt_image.jpg' 
+    photo = Photo(
+        description="Pittsburgh Skyline - 2/1/2025",
+        filename=filename,
+        filename_m=filename,
+        filename_s=filename,
+        author=User.query.get(random.randint(1, User.query.count())),
+        timestamp=fake.date_time_this_year()
+    )
+    tag = Tag(name='Pittsburgh')
+    photo.tags.append(tag)
+    db.session.add(photo)
+    
+    filename = 'Sky_Image.jpg' 
+    photo = Photo(
+        description="What a beautiful day!",
+        filename=filename,
+        filename_m=filename,
+        filename_s=filename,
+        author=User.query.get(random.randint(1, User.query.count())),
+        timestamp=fake.date_time_this_year()
+    )
+
+    tag = Tag(name='HappyLife')
+    photo.tags.append(tag)
+    db.session.add(photo)
+
+    filename = 'Mountains_image.jpg' 
+    photo = Photo(
+        description="Behold the great smoky mountains!",
+        filename=filename,
+        filename_m=filename,
+        filename_s=filename,
+        author=User.query.get(random.randint(1, User.query.count())),
+        timestamp=fake.date_time_this_year()
+    )
+
+    tag = Tag(name='Breathtaking')
+    photo.tags.append(tag)
+    db.session.add(photo)
+
+    filename = 'Flowers_Image.jpg' 
+    photo = Photo(
+        description="Can you smell the flowers",
+        filename=filename,
+        filename_m=filename,
+        filename_s=filename,
+        author=User.query.get(random.randint(1, User.query.count())),
+        timestamp=fake.date_time_this_year()
+    )
+
+    tag = Tag(name='Fresh')
+    photo.tags.append(tag)
+    db.session.add(photo)
+
+    filename = 'Ronaldo_Image.jpg' 
+    photo = Photo(
+        description="Goallllll!",
+        filename=filename,
+        filename_m=filename,
+        filename_s=filename,
+        author=User.query.get(random.randint(1, User.query.count())),
+        timestamp=fake.date_time_this_year()
+    )
+
+    tag = Tag(name='Goal')
+    photo.tags.append(tag)
+    db.session.add(photo)
+
+    filename = 'Car_Image.jpg' 
+    photo = Photo(
+        description="Old - School!",
+        filename=filename,
+        filename_m=filename,
+        filename_s=filename,
+        author=User.query.get(random.randint(1, User.query.count())),
+        timestamp=fake.date_time_this_year()
+    )
+
+    tag = Tag(name='Car-Finatic')
+    photo.tags.append(tag)
+    db.session.add(photo)
+
     db.session.commit()
 
 
@@ -106,12 +183,60 @@ def fake_collect(count=50):
 
 
 def fake_comment(count=100):
+    comment = Comment(
+        author=User.query.get(random.randint(1, User.query.count())),
+        body="White people suck",
+        timestamp=fake.date_time_this_year(),
+        photo=Photo.query.get(1)
+    )
+    db.session.add(comment)
+
+    comment = Comment(
+        author=User.query.get(random.randint(1, User.query.count())),
+        body="Hope you had a fun time!",
+        timestamp=fake.date_time_this_year(),
+        photo=Photo.query.get(1)
+    )
+    db.session.add(comment)
+
+    comment = Comment(
+        author=User.query.get(random.randint(1, User.query.count())),
+        body="I loved their last song!",
+        timestamp=fake.date_time_this_year(),
+        photo=Photo.query.get(1)
+    )
+
+    db.session.add(comment)
+
+    comment = Comment(
+        author=User.query.get(random.randint(1, User.query.count())),
+        body="You look ugly. Delete this",
+        timestamp=fake.date_time_this_year(),
+        photo=Photo.query.get(1)
+    )
+
+    db.session.add(comment) 
+
+    comment = Comment(
+        author=User.query.get(random.randint(1, User.query.count())),
+        body="No way, I was there too!",
+        timestamp=fake.date_time_this_year(),
+        photo=Photo.query.get(1)
+    )
+    db.session.add(comment) 
+
+
     for i in range(count):
         comment = Comment(
             author=User.query.get(random.randint(1, User.query.count())),
             body=fake.sentence(),
             timestamp=fake.date_time_this_year(),
-            photo=Photo.query.get(random.randint(1, Photo.query.count()))
+            photo=Photo.query.get(random.randint(2, Photo.query.count()))
         )
         db.session.add(comment)
+
+
+
+
+
     db.session.commit()
