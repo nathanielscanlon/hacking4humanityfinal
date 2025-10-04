@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Comment{% endblock %}
+
+{% block content %}
+    <div class="alert alert-warning">
+        Your comment may contain hate speech. Are you sure you want to post it?
+    </div>
+    <p> <b> The text you entered appears to contain hate speech. This type of language can harm others and violates community standards.
+        
+        If you're feeling upset or frustrated, take a deep breath and reflect. If needed, please visit these mental health resources below for your support.
+    </b>
+    </p>
+    <br>
+        <div align="center">
+        <img src="uploads/hate.jpg" width="300" height="200" style="margin-right: 50px;">
+        <img src="uploads/health.jpg" width="300" height="200" style="margin-right: 50px;">
+        <img src="uploads/hate3.jpg" width="300" height="200" style="margin-right: 50px;">
+        </div>
+    <br>
+    <div class="resources">
+        <h3>Resources</h3>
+        <ul>
+            <li><a href="https://www.headspace.com/meditation/meditation-for-anxiety" target="_blank">Meditation for Anxiety</a></li>
+            <li><a href="https://www.calm.com/" target="_blank">Calm - Meditation and Sleep Stories</a></li>
+            <li><a href="https://www.mindful.org/meditation/mindfulness-getting-started/" target="_blank">Mindfulness: Getting Started</a></li>
+            <li><a href="https://www.verywellmind.com/tips-to-reduce-stress-3145195" target="_blank">Tips to Reduce Stress</a></li>
+            <li><a href=" https://www.mentalhealth.org/" target="_blank">Coping with Trauma</a></li>
+            <li><a href="https://www.un.org/en/hate-speech" target="_blank">Say No to Hate</a></li>
+        </ul>
+    </div>
+    <form method="post" action="{{ url_for('.new_comment', photo_id=photo_id, page=page, reply=reply) }}">
+        <input type="hidden" name="body" value="{{ body }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-primary">Confirm</button>
+        <a href="{{ url_for('.show_photo', photo_id=photo_id) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}
+
