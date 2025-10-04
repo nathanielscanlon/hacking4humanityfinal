@@ -386,7 +386,7 @@ def delete_tag(photo_id, tag_id):
 @permission_required('COMMENT')
 def check_hate_speech():
     body = request.form.get('body')
-    genai.configure(api_key="AIzaSyD4NKCP6peWeL4obuLhDoqi6vQsbIjMU24")
+    genai.configure(api_key="HIDDEN")
     model = genai.GenerativeModel("gemini-1.5-flash")
     response = model.generate_content("Is the following hate speech or offensive, Return 0 if it isnt and 1 if it is and only output the number:" + body)
     is_hate_speech = int(response.text) == 1
