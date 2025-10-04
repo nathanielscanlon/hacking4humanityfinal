@@ -7,14 +7,13 @@ any hate protections. We then implemented an AI scanner to detect hate speech an
 we allowed users to customize their own protections so they could filter hate speech if they choose.
 Futhermore, we added carious parental controls and resources to help deter the spread of hate speech.
 
-Changes:
-The files albumy/templates/main/confirm_hate_speech.html and albumy/templates/user/settings/hate_safety.html were created soley by us. 
-In albumy/utils.py 109 - 133 were programmed by us.
-In albumy/blueprints/main.py 383-416 were programmed by us.
-IN albumy/forms/user.py  71-80 were programmed by us.
-In albumy/blueprints/user.py 220-231 were programmed by us.
-Other files weere edited by us, but they were used to make fake accounts on the 
-site. Furthermore, other html files were edited to display our settings. However,
-all relevant files to the way the hate prevention works and the site is displayed
-are above.
+### Changes
 
+- The files `albumy/templates/main/confirm_hate_speech.html` and `albumy/templates/user/settings/hate_safety.html` were created solely by us.  
+- In `albumy/utils.py`, lines **109–133** were programmed by us.  
+- In `albumy/blueprints/main.py`, lines **383–416** were programmed by us.  
+- In `albumy/forms/user.py`, lines **71–80** were programmed by us.  
+- In `albumy/blueprints/user.py`, lines **220–231** were programmed by us.  
+- Other files were edited by us to make fake accounts on the site. Furthermore, other HTML files were edited to display our settings.  
+
+All relevant files to the way the hate prevention works and the site is displayed are listed above.
