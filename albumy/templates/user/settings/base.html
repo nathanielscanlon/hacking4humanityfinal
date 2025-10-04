@@ -1,6 +1,8 @@
+
 {% extends 'base.html' %}
 {% from 'bootstrap/form.html' import render_form %}
 {% from 'bootstrap/nav.html' import render_nav_item %}
+
 
 {% block content %}
     <div class="page-header">
@@ -15,6 +17,7 @@
                 {{ render_nav_item('user.change_email_request', 'Change Email') }}
                 {{ render_nav_item('user.notification_setting', 'Notification') }}
                 {{ render_nav_item('user.privacy_setting', 'Privacy') }}
+                {{ render_nav_item('user.hate_safety', 'Hate Safety') }}
                 {{ render_nav_item('user.delete_account', 'Delete Account') }}
             </div>
         </div>
