@@ -22,6 +22,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from albumy.extensions import db
 from albumy.models import User
 from albumy.settings import Operations
+import google.generativeai as genai
 
 
 def generate_token(user, operation, expire_in=None, **kwargs):
@@ -104,3 +105,29 @@ def flash_errors(form):
                 getattr(form, field).label.text,
                 error
             ))
+
+def filter_comments(comments, hate_safety_level):
+    genai.configure(api_key="HIDDEN")
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    hate_threshold = 1.0
+    if hate_safety_level == "low":
+        hate_threshold = 0.85
+    elif hate_safety_level == "medium":
+        hate_threshold = 0.75
+    elif hate_safety_level == "high":
+        hate_threshold = 0.65
+
+
+    filtered_comments = []
+    for comment in comments:
+            if hate_threshold == 1.0:
+                filtered_comments.append(comment)
+            else:
+                response = model.generate_content("Give the following a hate/offensive score(between 0-1) and only output the number:" + comment.body)
+                if float(response.text) < hate_threshold:
+                    filtered_comments.append(comment)
+                    print("Comment passed")
+                else:
+                    comment.body = "🚨This comment has detected hate speech or offensive language! Change settings to view!🚨"
+                    filtered_comments.append(comment)
+    return filtered_comments
