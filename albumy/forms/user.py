@@ -8,7 +8,7 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, HiddenField, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, HiddenField, ValidationError, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, Optional, Regexp
 
 from albumy.models import User
@@ -67,6 +67,16 @@ class NotificationSettingForm(FlaskForm):
     receive_follow_notification = BooleanField('New follower')
     receive_collect_notification = BooleanField('New collector')
     submit = SubmitField()
+
+class HateSafetyForm(FlaskForm):
+    hate_safety_level = SelectField('Hate Safety Level', choices=[
+        ('none', 'None'),
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High')
+    ])
+    submit = SubmitField('Save Changes')
+
 
 
 class PrivacySettingForm(FlaskForm):
