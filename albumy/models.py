@@ -101,6 +101,7 @@ class User(db.Model, UserMixin):
     confirmed = db.Column(db.Boolean, default=False)
     locked = db.Column(db.Boolean, default=False)
     active = db.Column(db.Boolean, default=True)
+    hate_safety_level = db.Column(db.String(10), default='none')
 
     public_collections = db.Column(db.Boolean, default=True)
     receive_comment_notification = db.Column(db.Boolean, default=True)
