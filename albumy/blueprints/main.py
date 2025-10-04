@@ -8,7 +8,7 @@
 import os
 
 from flask import render_template, flash, redirect, url_for, current_app, \
-    send_from_directory, request, abort, Blueprint
+    send_from_directory, request, abort, Blueprint, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.sql.expression import func
 
@@ -17,7 +17,9 @@ from albumy.extensions import db
 from albumy.forms.main import DescriptionForm, TagForm, CommentForm
 from albumy.models import User, Photo, Tag, Follow, Collect, Comment, Notification
 from albumy.notifications import push_comment_notification, push_collect_notification
-from albumy.utils import rename_image, resize_image, redirect_back, flash_errors
+from albumy.utils import rename_image, resize_image, redirect_back, flash_errors, filter_comments
+
+import google.generativeai as genai
 
 main_bp = Blueprint('main', __name__)
 
@@ -143,6 +145,8 @@ def show_photo(photo_id):
     per_page = current_app.config['ALBUMY_COMMENT_PER_PAGE']
     pagination = Comment.query.with_parent(photo).order_by(Comment.timestamp.asc()).paginate(page, per_page)
     comments = pagination.items
+    if current_user.is_authenticated:
+        comments = filter_comments(comments, current_user.hate_safety_level)
 
     comment_form = CommentForm()
     description_form = DescriptionForm()
@@ -255,6 +259,7 @@ def edit_description(photo_id):
     return redirect(url_for('.show_photo', photo_id=photo_id))
 
 
+
 @main_bp.route('/photo/<int:photo_id>/comment/new', methods=['POST'])
 @login_required
 @permission_required('COMMENT')
@@ -281,31 +286,6 @@ def new_comment(photo_id):
 
     flash_errors(form)
     return redirect(url_for('.show_photo', photo_id=photo_id, page=page))
-
-
-@main_bp.route('/photo/<int:photo_id>/tag/new', methods=['POST'])
-@login_required
-def new_tag(photo_id):
-    photo = Photo.query.get_or_404(photo_id)
-    if current_user != photo.author and not current_user.can('MODERATE'):
-        abort(403)
-
-    form = TagForm()
-    if form.validate_on_submit():
-        for name in form.tag.data.split():
-            tag = Tag.query.filter_by(name=name).first()
-            if tag is None:
-                tag = Tag(name=name)
-                db.session.add(tag)
-                db.session.commit()
-            if tag not in photo.tags:
-                photo.tags.append(tag)
-                db.session.commit()
-        flash('Tag added.', 'success')
-
-    flash_errors(form)
-    return redirect(url_for('.show_photo', photo_id=photo_id))
-
 
 @main_bp.route('/set-comment/<int:photo_id>', methods=['POST'])
 @login_required
@@ -399,3 +379,41 @@ def delete_tag(photo_id, tag_id):
 
     flash('Tag deleted.', 'info')
     return redirect(url_for('.show_photo', photo_id=photo_id))
+
+
+@main_bp.route('/check-hate-speech', methods=['POST'])
+@login_required
+@permission_required('COMMENT')
+def check_hate_speech():
+    body = request.form.get('body')
+    genai.configure(api_key="AIzaSyD4NKCP6peWeL4obuLhDoqi6vQsbIjMU24")
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content("Is the following hate speech or offensive, Return 0 if it isnt and 1 if it is and only output the number:" + body)
+    is_hate_speech = int(response.text) == 1
+    print(response.text)
+
+    if is_hate_speech:
+        return render_template('main/confirm_hate_speech.html', body=body, photo_id=request.args.get('photo_id'), page=request.args.get('page'), reply=request.args.get('reply'))
+    else:
+        photo_id = request.args.get('photo_id')
+        page = request.args.get('page', 1, type=int)
+        reply = request.args.get('reply')
+        photo = Photo.query.get_or_404(photo_id)
+        author = current_user._get_current_object()
+        comment = Comment(body=body, author=author, photo=photo)
+
+        if reply:
+            comment.replied = Comment.query.get_or_404(reply)
+            if comment.replied.author.receive_comment_notification:
+                push_comment_notification(photo_id=photo.id, receiver=comment.replied.author)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Comment published.', 'success')
+
+        if current_user != photo.author and photo.author.receive_comment_notification:
+            push_comment_notification(photo_id, receiver=photo.author, page=page)
+
+        return redirect(url_for('.show_photo', photo_id=photo_id, page=page))
+
+
+
